@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Valentine's Gift Intro</title>
+  <!-- Importing Bebas Neue for a bold, modern look -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    /* Basic reset and centering */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #ffb6c1; /* Light pink background */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      transition: background 0.5s ease; /* smooth transition if the background changes */
+    }
+    
+    /* Styling for the messages */
+    #message {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      color: #00008b; /* Dark blue text */
+      opacity: 1;
+      transition: opacity 0.5s ease-in-out;
+      text-align: center;
+    }
+    
+    /* Final content container starts off transparent and slightly shifted down */
+    #finalContent {
+      opacity: 0;
+      transform: translateY(100px);
+      transition: all 1s ease;
+      text-align: center;
+    }
+
+    /* When slide-up class is added, the container moves up and becomes visible */
+    #finalContent.slide-up {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Make the GIF responsive and add bounce animation */
+    #finalContent img {
+      max-width: 80%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      cursor: pointer; /* show that it's clickable */
+      animation: slowBounce 3s ease-in-out infinite;
+    }
+
+    /* Keyframes for the slow bounce */
+    @keyframes slowBounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    /* Final text, initially hidden */
+    #finalText {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      color: #00008b;
+      opacity: 0;
+      transition: opacity 1s ease;
+      margin-top: 20px;
+      text-align: center;
+    }
+    
+    /* When fade-in class is added, the text appears */
+    #finalText.fade-in {
+      opacity: 1;
+    }
+
+    /* --------------- FLASH & SPACE BACKGROUND --------------- */
+
+    /* 1) White flash effect when you tap the GIF */
+    body.white-flash {
+      background: #fff !important; /* Force the background white */
+      transition: none; /* No smooth transition for an instant flash */
+    }
+
+    /* 2) Afterwards, switch to a space background (replace space.jpg with your own) */
+    body.space-bg {
+      background: url("space.jpg") no-repeat center center / cover !important;
+      transition: background 0.5s ease; /* fade to space background */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Initial message container -->
+  <div id="message">loading</div>
+
+  <!-- Container for the GIF and the final text -->
+  <div id="finalContent">
+    <img src="TV_gif.gif" alt="Valentine's Gift GIF" />
+    <div id="finalText">ready to accept your next temp job</div>
+  </div>
+  
+  <script>
+    // Step 1: Show "loading" for 2 seconds, then fade it out
+    setTimeout(() => {
+      const message = document.getElementById("message");
+      message.style.opacity = "0"; // fade out "loading"
+      
+      // After fade out completes (0.5s), change text to "this is platonically of course"
+      setTimeout(() => {
+        message.textContent = "this is platonically of course";
+        message.style.opacity = "1"; // fade in new text
+        
+        // Step 2: Show this text for 2 seconds, then fade it out
+        setTimeout(() => {
+          message.style.opacity = "0";
+          
+          // After fade out completes, hide "message" and slide up the GIF
+          setTimeout(() => {
+            message.style.display = "none";
+            const finalContent = document.getElementById("finalContent");
+            finalContent.classList.add("slide-up");
+            
+            // Step 3: After the GIF slides up, fade in the final text
+            setTimeout(() => {
+              const finalText = document.getElementById("finalText");
+              finalText.classList.add("fade-in");
+            }, 1000); // wait for the slide-up animation to complete
+          }, 500); // wait for message fade-out to finish
+          
+        }, 2000); // show "this is platonically of course" for 2 seconds
+      }, 500); // wait 0.5s for "loading" text to fully fade out
+    }, 2000); // keep "loading" text for 2 seconds
+
+
+    // --------------- CLICK HANDLER FOR THE GIF ---------------
+    const gifElement = document.querySelector("#finalContent img");
+    gifElement.addEventListener("click", () => {
+      // 1) Immediately flash white
+      document.body.classList.add("white-flash");
+
+      // 2) After a short delay, remove flash and add space background
+      setTimeout(() => {
+        document.body.classList.remove("white-flash");
+        document.body.classList.add("space-bg");
+      }, 200); 
+      // Adjust 200ms (0.2s) as you like; it’s just how long the white flash stays
+    });
+  </script>
+</body>
+</html>
