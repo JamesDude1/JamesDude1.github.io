@@ -7,22 +7,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
     /* Basic reset and centering */
-    body, html {
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
       height: 100%;
-      background: #ffb6c1; /* Light pink background */
+      width: 100%;
+    }
+    
+    body {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
-      transition: background 0.5s ease; /* smooth transition if the background changes */
+      background: #ffb6c1; /* Light pink background */
+      transition: background 0.5s ease; /* Smooth transition if background changes */
+      overflow: hidden; /* Hides scrollbars if content extends */
+      font-family: 'Bebas Neue', sans-serif;
     }
     
     /* Styling for the messages */
     #message {
-      font-family: 'Bebas Neue', sans-serif;
       font-size: 3rem;
       color: #00008b; /* Dark blue text */
       opacity: 1;
@@ -44,7 +51,7 @@
       transform: translateY(0);
     }
     
-    /* Make the GIF responsive and add bounce animation */
+    /* Make the GIF responsive and add a slow bounce animation */
     #finalContent img {
       max-width: 80%;
       height: auto;
@@ -66,7 +73,6 @@
 
     /* Final text, initially hidden */
     #finalText {
-      font-family: 'Bebas Neue', sans-serif;
       font-size: 3rem;
       color: #00008b;
       opacity: 0;
@@ -80,11 +86,11 @@
       opacity: 1;
     }
 
-    /* --------------- FLASH & SPACE BACKGROUND --------------- */
+    /* ------------------ FLASH & SPACE BACKGROUND ------------------ */
 
     /* 1) White flash effect when you tap the GIF */
     body.white-flash {
-      background: #fff !important; /* Force the background white */
+      background: #fff !important; /* Force the background white immediately */
       transition: none; /* No smooth transition for an instant flash */
     }
 
@@ -107,7 +113,14 @@
   </div>
   
   <script>
-    // Step 1: Show "loading" for 2 seconds, then fade it out
+    /*******************************************************************
+     * Sequence:
+     * 1) "loading" shows for 2s
+     * 2) Fade it out, then show "this is platonically of course" for 2s
+     * 3) Fade that out, remove the message, reveal the GIF (slide up)
+     * 4) Fade in the final text
+     *******************************************************************/
+    
     setTimeout(() => {
       const message = document.getElementById("message");
       message.style.opacity = "0"; // fade out "loading"
@@ -117,7 +130,7 @@
         message.textContent = "this is platonically of course";
         message.style.opacity = "1"; // fade in new text
         
-        // Step 2: Show this text for 2 seconds, then fade it out
+        // Show this text for 2 seconds, then fade it out
         setTimeout(() => {
           message.style.opacity = "0";
           
@@ -127,19 +140,22 @@
             const finalContent = document.getElementById("finalContent");
             finalContent.classList.add("slide-up");
             
-            // Step 3: After the GIF slides up, fade in the final text
+            // After the GIF slides up, fade in the final text
             setTimeout(() => {
               const finalText = document.getElementById("finalText");
               finalText.classList.add("fade-in");
-            }, 1000); // wait for the slide-up animation to complete
-          }, 500); // wait for message fade-out to finish
+            }, 1000); // Wait for the slide-up animation to complete
+          }, 500); // Wait for message fade-out to finish
           
-        }, 2000); // show "this is platonically of course" for 2 seconds
-      }, 500); // wait 0.5s for "loading" text to fully fade out
-    }, 2000); // keep "loading" text for 2 seconds
+        }, 2000); // Show "this is platonically of course" for 2 seconds
+      }, 500); // Wait 0.5s for "loading" to fully fade out
+    }, 2000); // Keep "loading" visible for 2 seconds
 
-
-    // --------------- CLICK HANDLER FOR THE GIF ---------------
+    /*******************************************************************
+     * On GIF click:
+     * 1) Immediate white flash
+     * 2) After 0.2s, remove flash and switch to a "space" background
+     *******************************************************************/
     const gifElement = document.querySelector("#finalContent img");
     gifElement.addEventListener("click", () => {
       // 1) Immediately flash white
@@ -150,7 +166,7 @@
         document.body.classList.remove("white-flash");
         document.body.classList.add("space-bg");
       }, 200); 
-      // Adjust 200ms (0.2s) as you like; it’s just how long the white flash stays
+      // Adjust 200ms as desired (this is how long the white flash stays)
     });
   </script>
 </body>
